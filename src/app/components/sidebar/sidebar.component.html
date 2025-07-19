@@ -1,0 +1,11 @@
+<div class="sidebar">
+  <h2>My App</h2>
+  <ul>
+    <li routerLink="/dashboard" routerLinkActive="active">Dashboard</li>
+    <li (click)="logout()">Logout</li>
+  </ul>
+</div>
+
+<div class="content">
+  <router-outlet></router-outlet>
+</div>
