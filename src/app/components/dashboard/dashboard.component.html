@@ -1,2 +1,219 @@
- <p>dashboard works!</p>
+<div class="p-6 bg-white rounded shadow">
 
+  <h2 class="text-2xl font-bold mb-4">Orders</h2>
+
+
+  <div class="flex gap-4 mb-6">
+    <input
+      type="text"
+      placeholder="Search by description"
+      [(ngModel)]="filterDescription"
+      (input)="applyFilters()"
+      class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-600"
+    />
+    <input
+      type="text"
+      placeholder="Search by source"
+      [(ngModel)]="filterSource"
+      (input)="applyFilters()"
+      class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-600"
+    />
+    <input
+      type="date"
+      placeholder="Filter by date"
+      [(ngModel)]="filterDate"
+      (input)="applyFilters()"
+      class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-600"
+    />
+  </div>
+
+  <div *ngIf="loading" class="text-blue-500">Loading orders...</div>
+  <div *ngIf="error" class="text-red-500">{{ error }}</div>
+
+  <table
+    class="min-w-full border border-gray-300"
+    *ngIf="!loading && !error && filteredOrders.length"
+  >
+    <thead class="bg-gray-100">
+    <tr>
+      <th (click)="sortBy('id')" class="cursor-pointer border px-4 py-2">
+        ID
+        <sort-arrow
+          [column]="'id'"
+          [currentColumn]="sortColumn"
+          [direction]="sortDirection"
+        ></sort-arrow>
+      </th>
+      <th (click)="sortBy('description')" class="cursor-pointer border px-4 py-2">
+        Description
+        <sort-arrow
+          [column]="'description'"
+          [currentColumn]="sortColumn"
+          [direction]="sortDirection"
+        ></sort-arrow>
+      </th>
+      <th (click)="sortBy('source')" class="cursor-pointer border px-4 py-2">
+        Source
+        <sort-arrow
+          [column]="'source'"
+          [currentColumn]="sortColumn"
+          [direction]="sortDirection"
+        ></sort-arrow>
+      </th>
+      <th (click)="sortBy('address')" class="cursor-pointer border px-4 py-2">
+        Address
+        <sort-arrow
+          [column]="'address'"
+          [currentColumn]="sortColumn"
+          [direction]="sortDirection"
+        ></sort-arrow>
+      </th>
+      <th (click)="sortBy('dateOrder')" class="cursor-pointer border px-4 py-2">
+        Date
+        <sort-arrow
+          [column]="'dateOrder'"
+          [currentColumn]="sortColumn"
+          [direction]="sortDirection"
+        ></sort-arrow>
+      </th>
+      <th (click)="sortBy('state')" class="cursor-pointer border px-4 py-2">
+        State
+        <sort-arrow
+          [column]="'state'"
+          [currentColumn]="sortColumn"
+          [direction]="sortDirection"
+        ></sort-arrow>
+      </th>
+      <th (click)="sortBy('orderNumber')" class="cursor-pointer border px-4 py-2">
+        Order Number
+        <sort-arrow
+          [column]="'orderNumber'"
+          [currentColumn]="sortColumn"
+          [direction]="sortDirection"
+        ></sort-arrow>
+      </th>
+      <th (click)="sortBy('client')" class="cursor-pointer border px-4 py-2">
+        Client
+        <sort-arrow
+          [column]="'client'"
+          [currentColumn]="sortColumn"
+          [direction]="sortDirection"
+        ></sort-arrow>
+      </th>
+      <th class="border px-4 py-2 text-center">Canceled</th>
+      <th class="border px-4 py-2 text-center">Active</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let order of filteredOrders">
+      <td class="border px-4 py-2">{{ order.id }}</td>
+      <td class="border px-4 py-2">{{ order.description }}</td>
+      <td class="border px-4 py-2">{{ order.source }}</td>
+      <td class="border px-4 py-2">{{ order.address }}</td>
+      <td class="border px-4 py-2">{{ order.dateOrder | date: 'short' }}</td>
+      <td class="border px-4 py-2">{{ order.state }}</td>
+      <td class="border px-4 py-2">{{ order.orderNumber }}</td>
+      <td class="border px-4 py-2">
+        {{ order.client.firstName }} {{ order.client.lastName }}
+      </td>
+      <td class="border px-4 py-2 text-center">
+          <span
+            *ngIf="!order.canceled; else canceledIcon"
+            class="text-green-600"
+            title="Not Canceled"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="inline h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="3"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+          </span>
+        <ng-template #canceledIcon>
+            <span class="text-red-600" title="Canceled">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="inline h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="3"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </span>
+        </ng-template>
+      </td>
+      <td class="border px-4 py-2 text-center">
+          <span *ngIf="order.active; else inactiveIcon" class="text-green-600" title="Active">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="inline h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="3"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+          </span>
+        <ng-template #inactiveIcon>
+            <span class="text-red-600" title="Inactive">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="inline h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="3"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </span>
+        </ng-template>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination controls -->
+  <div class="flex justify-center items-center gap-3 mt-4">
+    <button
+      class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+      (click)="changePage(currentPage - 1)"
+      [disabled]="currentPage === 1"
+    >
+      Prev
+    </button>
+
+    <span>Page {{ currentPage }} / {{ totalPages }}</span>
+
+    <button
+      class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+      (click)="changePage(currentPage + 1)"
+      [disabled]="currentPage === totalPages"
+    >
+      Next
+    </button>
+  </div>
+</div>

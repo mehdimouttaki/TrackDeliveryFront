@@ -1,64 +1,42 @@
-import { Component, inject } from '@angular/core';
-import { IntegrationService } from '../../services/integration.service';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { LoginRequest } from '../../models/login-request';
-import { Router, RouterLink } from '@angular/router';
-import { LocalStorageService } from '../../services/local-storage.service';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, HttpClientModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
 
-  constructor(private integration: IntegrationService,  private storage : LocalStorageService) {}
+  username: string = '';
+  password: string = '';
+  message: string = '';
 
-  userForm : FormGroup =  new FormGroup({
-    username: new FormControl('', Validators.required),
-    password: new FormControl('', [Validators.required, Validators.minLength(4)])
-  });
+  private http = inject(HttpClient);
+  private router = inject(Router);
 
-  router = inject(Router);
-  request: LoginRequest = new LoginRequest;
+  login(event: Event): void {
+    event.preventDefault();
+    this.message = '⏳ Sending request...';
 
-  login() {
-    this.storage.remove('auth-key');
-
-    const formValue =  this.userForm.value;
-
-    if(formValue.username == '' || formValue.password == '') {
-      alert('Wrong Credentials');
-      return;
-    }
-
-    this.request.username = formValue.username;
-    this.request.password = formValue.password;
-
-    this.integration.doLogin(this.request).subscribe({
-      next:(res) => {
-        console.log("Received Response:"+res.token);
-
-        this.storage.set('auth-key', res.token);
-
-        this.router.navigate(['/dashboard']);
-
-        this.integration.dashboard([]).subscribe({
-          next: (res) => {
-            console.log('Orders:', res.searchValue);
-          },
-          error: (err) => {
-            console.error('Error:', err);
-          }
-        });
+    this.http.post<any>('http://localhost:8080/apis/authenticate', {
+      username: this.username,
+      password: this.password
+    }).subscribe({
+      next: (res) => {
+        localStorage.setItem('token', res.token);
+        this.message = '✅ Login successful';
+        setTimeout(() => this.router.navigateByUrl('/dashboard'), 1000);
       },
       error: (err) => {
-        console.log("Error Received Response:"+err);
-        this.storage.remove('auth-key');
+        this.message = err.error?.message || '❌ Invalid username or password';
       }
     });
   }
-
 }

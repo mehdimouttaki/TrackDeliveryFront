@@ -1,18 +1,20 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { LocalStorageService } from '../services/local-storage.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent {
+  constructor(private router: Router) {}
 
-  constructor(private router: Router, private storage: LocalStorageService) {}
-
-  logout(): void {
-    this.storage.remove('auth-key');
+  logout() {
+    localStorage.removeItem('token');
     this.router.navigate(['/login']);
   }
 }

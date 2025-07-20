@@ -6,9 +6,9 @@ import { LoginResponse } from '../models/login-response';
 import { OrderResponse } from '../models/OrderResponse';
 import { SearchResponse } from '../models/SearchResponse';
 
-const BASE_URL = "http://localhost:8080/api/auth/authenticate";
+const BASE_URL = "http://localhost:8080/apis/authenticate";
 
-const ORDER = "http://localhost:8080/order/filter/table/all";
+const ORDER = "http://localhost:8080/order/search";
 
 @Injectable({
   providedIn: 'root'

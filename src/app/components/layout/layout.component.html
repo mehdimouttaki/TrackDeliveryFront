@@ -1,37 +1,13 @@
-<div style="display: flex;">
-    <div style="display: inline-block;width: 20%;">
-        <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark vh-100">
-            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                <svg class="bi me-2 text-white" width="40" height="32">
-                    <use xlink:href="#bootstrap"></use>
-                </svg>
-                <span class="fs-4">Sidebar</span>
-            </a>
-            <hr>
-            <ul class="nav nav-pills flex-column mb-auto">
-                <li>
-                    <a routerLink="dashboard" routerLinkActive="active" class="nav-link text-white">
-                        <svg class="bi me-2" width="16" height="16">
-                            <use xlink:href="#speedometer2"></use>
-                        </svg>
-                        Dashboard
-                    </a>
-                </li>
-                <li>
-                    <a routerLink="booking-list" routerLinkActive="active" class="nav-link text-white">
-                        <svg class="bi me-2" width="16" height="16">
-                            <use xlink:href="#table"></use>
-                        </svg>
-                        Booking List
-                    </a>
-                </li>
+<app-navbar></app-navbar>
 
-            </ul>
-            <hr>
-        </div>
-    </div>
+<div class="flex flex-1 min-h-[calc(100vh-64px-40px)]">
+  <app-sidebar></app-sidebar>
 
-    <div style="display: inline-block;width: 80%;">
-        <router-outlet />
-    </div>
+  <main class="flex-1 bg-gray-100 p-6 overflow-auto">
+    <router-outlet></router-outlet>
+  </main>
 </div>
+
+<footer class="bg-white border-t text-center p-4 text-sm text-gray-600">
+  &copy; 2025 My App. All rights reserved.
+</footer>
