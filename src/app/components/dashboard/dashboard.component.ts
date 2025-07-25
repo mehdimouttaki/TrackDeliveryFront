@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { OrdersService, Order } from '../../services/orders.service';
 import { FormsModule } from '@angular/forms';
 import { SortArrow } from '../dashboard/sort-arrow.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule,SortArrow],
+  imports: [CommonModule, FormsModule, SortArrow],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
@@ -22,16 +23,17 @@ export class DashboardComponent implements OnInit {
   filterSource = '';
   filterDate = '';
 
-  // Pagination properties
+  selectedOrderId: number | null = null;
+
   currentPage = 1;
   pageSize = 5;
   totalPages = 1;
 
-  // Sorting properties
   sortColumn = '';
   sortDirection: 'asc' | 'desc' = 'asc';
 
   ordersService = inject(OrdersService);
+  router = inject(Router);  // <- هنا التعريف
 
   ngOnInit(): void {
     this.loadOrders();
@@ -46,7 +48,7 @@ export class DashboardComponent implements OnInit {
         this.applyFilters();
         this.loading = false;
       },
-      error: (err) => {
+      error: () => {
         this.error = 'Failed to load orders';
         this.loading = false;
       }
@@ -61,7 +63,6 @@ export class DashboardComponent implements OnInit {
       return descMatch && sourceMatch && dateMatch;
     });
 
-    // Sort
     if (this.sortColumn) {
       tempOrders = tempOrders.sort((a, b) => {
         const valA = this.getFieldValue(a, this.sortColumn);
@@ -74,13 +75,12 @@ export class DashboardComponent implements OnInit {
 
     this.totalPages = Math.ceil(tempOrders.length / this.pageSize);
 
-    // Pagination
     const startIndex = (this.currentPage - 1) * this.pageSize;
     this.filteredOrders = tempOrders.slice(startIndex, startIndex + this.pageSize);
   }
 
   getFieldValue(order: Order, field: string) {
-    switch(field) {
+    switch (field) {
       case 'id': return order.id;
       case 'description': return order.description.toLowerCase();
       case 'source': return order.source.toLowerCase();
@@ -101,13 +101,24 @@ export class DashboardComponent implements OnInit {
 
   sortBy(column: string) {
     if (this.sortColumn === column) {
-      // Toggle sort direction
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
       this.sortColumn = column;
       this.sortDirection = 'asc';
     }
     this.applyFilters();
+  }
+
+  toggleDropdown(id: number) {
+    this.selectedOrderId = this.selectedOrderId === id ? null : id;
+  }
+
+  editOrder(order: Order) {
+    this.router.navigate(['/modify', order.id]);  // 👈 navigate to /modify/ID
+  }
+  logout() {
+    localStorage.clear();
+    this.router.navigate(['/login']);
   }
 
 }

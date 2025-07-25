@@ -12,7 +12,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptorsFromDi()),
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: authKeyInterceptor,
+      useValue: authKeyInterceptor,
       multi: true,
     }
   ]

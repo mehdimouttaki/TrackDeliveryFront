@@ -30,9 +30,11 @@ export class LoginComponent {
       password: this.password
     }).subscribe({
       next: (res) => {
-        localStorage.setItem('token', res.token);
+        localStorage.setItem('auth-key', res.token);
         this.message = '✅ Login successful';
         setTimeout(() => this.router.navigateByUrl('/dashboard'), 1000);
+        this.router.navigate(['/dashboard']);
+
       },
       error: (err) => {
         this.message = err.error?.message || '❌ Invalid username or password';

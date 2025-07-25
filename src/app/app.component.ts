@@ -9,5 +9,5 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'login-angular18-spring-boot-integration';
+  title = 'TrackDeliveryFront';
 }

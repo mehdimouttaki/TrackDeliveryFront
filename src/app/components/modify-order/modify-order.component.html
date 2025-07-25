@@ -1,0 +1,55 @@
+<div class="min-h-screen bg-gray-100 p-6">
+  <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-md p-8 space-y-6">
+    <h2 class="text-2xl font-bold text-gray-700">Modifier la Commande</h2>
+
+    <!-- Order ID (readonly) -->
+    <div>
+      <label class="block text-sm font-medium text-gray-600 mb-1">Order ID</label>
+      <input
+        type="text"
+        [value]="orderId"
+        readonly
+        class="w-full border border-gray-300 rounded px-4 py-2 bg-gray-100 text-gray-600 cursor-not-allowed"
+      />
+    </div>
+
+    <!-- Address -->
+    <div>
+      <label class="block text-sm font-medium text-gray-600 mb-1">Adresse</label>
+      <input
+        type="text"
+        [(ngModel)]="order!.address"
+        name="address"
+        class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Adresse de livraison"
+      />
+    </div>
+
+    <!-- Date Order -->
+    <div>
+      <label class="block text-sm font-medium text-gray-600 mb-1">Date de Commande</label>
+      <input
+        type="datetime-local"
+        [(ngModel)]="order!.dateOrder"
+        name="dateOrder"
+        class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex justify-end gap-4">
+      <button
+        (click)="cancel()"
+        class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300"
+      >
+        Annuler
+      </button>
+      <button
+        (click)="saveOrder()"
+        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      >
+        Modifier
+      </button>
+    </div>
+  </div>
+</div>
